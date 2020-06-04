@@ -119,3 +119,56 @@ FROM funcionarios f JOIN avaliacoesdesempenho av
 WHERE av.ano = (year(now()) - 1) OR isnull(av.ano)
 GROUP BY f.idfuncionario                      
 ORDER BY fdn.hierarquia, fdn.iddepartamento;
+
+-- Q10: Evolução da avaliação dos funcionários face ao ano anterior?
+SELECT 	
+	h.descricao AS Nivel,
+    d.descricao AS Departamento,
+	f.idfuncionario AS Id,
+	concat(f.primeiro, " ", f.apelido) as 'Funcionário Avaliado',
+    fn.descricao AS Funcao,
+	if(fc.idfuncionariochefe is null , '', 'X') as Chefe,
+    av.idavaliador as Id,
+    concat(f1.primeiro, " ", f1.apelido) as 'Funcionário Avaliador',
+	T2.av_an_m2 as 'Avaliação Ano-2',
+	T1.av_an_m1 as 'Avaliação Ano-1',
+	case 
+		when T1.av_an_m1 is null and T2.av_an_m2 is null		then '-'
+		when T1.av_an_m1 is not null and T2.av_an_m2 is null 	then 'não foi avaliado no 1º ano'
+        when T1.av_an_m1 is null and T2.av_an_m2 is not null	then 'não foi avaliado no 2º ano'
+		else concat(format((T1.av_an_m1 - T2.av_an_m2) / T1.av_an_m1 * 100, 2), '%')
+	end as Evolução
+FROM funcionarios f 
+	JOIN funcoes fn
+		ON fn.idfuncao = f.idfuncao
+	JOIN departamentos d
+		ON d.iddepartamento = fn.iddepartamento
+	JOIN hierarquiaorg h
+		ON h.idhierarquia = d.idhierarquia
+	LEFT JOIN funcionarioschefe fc
+		ON fc.idfuncionariochefe = f.idfuncionario
+	LEFT JOIN avaliacoesdesempenho av
+		ON av.idavaliado = f.idfuncionario
+	LEFT JOIN funcionarios f1
+		ON f1.idfuncionario = av.idavaliador
+	left join 	
+		(
+			select av.idavaliado, format(avg(ka.avaliacao), 2) as 'av_an_m1'
+			from avaliacoesdesempenho av 
+				join kpisavaliados ka
+					on ka.ano = av.ano and ka.idavaliado = av.idavaliado        
+			where av.ano = year(now()) - 1
+			group by av.idavaliado
+		) T1 
+		on T1.idavaliado = f.idfuncionario
+	left join	
+		(
+			select av.idavaliado, format(avg(ka.avaliacao), 2) as 'av_an_m2'
+			from avaliacoesdesempenho av 
+				join kpisavaliados ka
+					on ka.ano = av.ano and ka.idavaliado = av.idavaliado        
+			where av.ano = year(now()) - 2
+			group by av.idavaliado
+		) T2
+		on T2.idavaliado = f.idfuncionario
+GROUP BY f.idfuncionario;
