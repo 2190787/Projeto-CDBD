@@ -73,7 +73,7 @@ order by media desc;
 -- Q8: Quais os funcionários com avaliação abaixo da média no ano de 2019?
 select 	f.idfuncionario as 'Numero Funcionário',
 		concat(f.primeiro, " ", f.apelido) as Nome,
-        round(avg(ka.avaliacao), 2) as Media,
+        round(avg(ka.avaliacao), 2) as Avaliação_Média,
         concat(round(((avg(ka.avaliacao) / (select avg(ka.avaliacao)
 											From kpisavaliados ka
 											where ka.ano = 2019)) - 1) * 100, 2), '%') as 'Desvio Face Média Empresa' 
@@ -83,10 +83,10 @@ from funcionarios f join avaliacoesdesempenho ad
 						on (ad.ano = ka.ano and ad.idavaliado = ka.idavaliado)
 where ad.ano = 2019
 group by f.idfuncionario
-having Media < (select avg(ka.avaliacao)
+having Avaliação_Média < (select avg(ka.avaliacao)
 				From kpisavaliados ka
 				where ka.ano = 2019)
-order by Media desc;
+order by Avaliação_Média desc;
 
 -- Q9: Quais os funcionários com a avaliação no Top3 da empresa no ano 2019?
 select 	f.idfuncionario as 'Numero Funcionário',
