@@ -26,16 +26,16 @@ group by Funcao
 order by h.nivelhierarquico asc;
 
 -- Q3 Tarefas Atribuidas a Funções por Departamento
-select d.iddepartamento as Num_Dep, d.descricao as Departamento, f.descricao as Função, t.idtarefa as idTarefa, t.descricao as Tarefa
+select d.descricao as Departamento, f.descricao as Função, t.idtarefa as idTarefa, t.descricao as Tarefa
 from funcoes f 	join departamentos d
 					on d.iddepartamento = f.iddepartamento
-				join hierarquiaorg n
-					on n.idhierarquia = d.idhierarquia
+				join hierarquiaorg h
+					on h.idhierarquia = d.idhierarquia
 				join listatarefas l
 					on l.idfuncao = f.idfuncao
 				join tarefas t
 					on t.idtarefa = l.idtarefa
-order by Num_Dep, Departamento;
+order by h.nivelhierarquico;
 
 -- Q4 Kpi's extraídos da cada tarefa de cada função
 select fn.descricao as Funcao, t.descricao as Tarefa, k.descricao as KPI
