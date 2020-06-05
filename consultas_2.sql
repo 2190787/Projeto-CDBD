@@ -9,7 +9,7 @@ from funcionarios f
 group by fn.descricao
 order by fn.descricao;
 
--- Q1 Número de funcionários por departamento
+-- Q2 Número de funcionários por departamento
 select  d.descricao as Nome_Dep,
 		count(*) as Num_funcionarios
 from funcionarios f
@@ -20,7 +20,7 @@ from funcionarios f
 group by d.descricao
 order by 1;
 
--- Q2 Tarefas Atribuidas a Funções por Departamento
+-- Q3 Tarefas Atribuidas a Funções por Departamento
 SELECT d.iddepartamento AS nDep, d.descricao AS Departamento, f.descricao AS Função, t.idtarefa AS idTarefa, t.descricao AS Tarefa
 FROM funcoes f 	JOIN departamentos d
 					ON d.iddepartamento = f.iddepartamento
@@ -32,7 +32,7 @@ FROM funcoes f 	JOIN departamentos d
 					ON t.idtarefa = l.idtarefa
 ORDER BY 1, 2;
 
--- Q3 Kpi's extraídos da cada tarefa de cada função
+-- Q4 Kpi's extraídos da cada tarefa de cada função
 select fn.descricao as Funcao, t.descricao as Tarefa, k.descricao as KPI
 from funcoes fn JOIN listatarefas lt
 					ON fn.idfuncao = lt.idfuncao
@@ -41,32 +41,26 @@ from funcoes fn JOIN listatarefas lt
 				JOIN kpis k
 					ON t.idtarefa = k.idtarefa;
                     
--- Q4 Avaliação média dos colaboradores no Ano de 2018
-select * -- ad.ano, ad.idavaliado, ad.idavaliador, ka.idkpi, ka.objetivo, ka.avaliacao
-from avaliacoesdesempenho ad join kpisavaliados ka
-							 on (ad.ano = ka.ano and ad.idavaliado = ka.idavaliado)
-where ad.ano = 2019;
+-- Q5 Avaliação média dos colaboradores no Ano de 2019, por exemplo
+select ad.ano, concat(f.primeiro, " ", f.apelido) as Nome, round(avg(ka.avaliacao), 2) as Media
+from funcionarios f join avaliacoesdesempenho ad
+						on ad.idavaliado = f.idfuncionario
+                    join kpisavaliados ka
+						on (ad.ano = ka.ano and ad.idavaliado = ka.idavaliado)
+where ad.ano = 2019
+GROUP BY Nome
+ORDER BY Media desc;
 
-SELECT * from kpisavaliados;
-
--- Avaliação de todos os funcionários por KPI e por Ano
-select f.idfuncionario, concat(f.primeiro, " ", f.apelido) AS Nome,
-	   fn.descricao AS Funcao,
-       t.descricao AS Tarefa,
-       k.descricao AS KPI,
-       ka.avaliacao AS Pontuacao,
-       av.ano
-from funcionarios f JOIN funcoes fn
-						ON fn.idfuncao = f.idfuncao
-					JOIN listatarefas l
-						ON l.idfuncao = fn.idfuncao
-					JOIN tarefas t
-						ON t.idtarefa = l.idtarefa
-					JOIN kpis k
-						ON k.idtarefa = t.idtarefa
-					JOIN kpisavaliados ka
-						on ka.idkpi = k.idkpi
-					Join avaliacoesdesempenho av
-						on (av.ano = ka.ano and av.idavaliado = ka.idavaliado)
--- where av.ano = year(now())-1;
-WHERE f.idfuncionario = 5;
+-- Q6 Avaliação médio por departamento no ano de 2019, por exemplo
+select ad.ano, d.descricao as Departamento, round(avg(ka.avaliacao), 2) as Media
+from funcionarios f join funcoes fn
+						on f.idfuncao = fn.idfuncao
+					join departamentos d
+						on fn.iddepartamento = d.iddepartamento
+					join avaliacoesdesempenho ad
+						on ad.idavaliado = f.idfuncionario
+                    join kpisavaliados ka
+						on (ad.ano = ka.ano and ad.idavaliado = ka.idavaliado)
+where ad.ano = 2019
+GROUP BY Departamento
+ORDER BY media desc;
