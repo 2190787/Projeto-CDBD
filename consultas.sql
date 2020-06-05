@@ -70,6 +70,29 @@ where ad.ano = 2019
 group by Departamento
 order by media desc;
 
+-- Q7 Departamentos com avaliação abaixo da média no ano de 2019, por exemplo
+select d.descricao as Departamento,
+       round(avg(ka.avaliacao), 2) as Media_Departamento,
+	   concat(round((avg(ka.avaliacao) - (SELECT avg(ka.avaliacao)
+						     FROM kpisavaliados ka
+							 WHERE ka.ano = 2019)) / (SELECT avg(ka.avaliacao)
+													  FROM kpisavaliados ka
+													  WHERE ka.ano = 2019) * 100, 2), ' %') as 'Desvio face à média da empresa'
+from funcionarios f join funcoes fn
+						on f.idfuncao = fn.idfuncao
+					join departamentos d
+						on fn.iddepartamento = d.iddepartamento
+					join avaliacoesdesempenho ad
+						on ad.idavaliado = f.idfuncionario
+                    join kpisavaliados ka
+						on (ad.ano = ka.ano and ad.idavaliado = ka.idavaliado)
+WHERE ad.ano = 2019
+GROUP BY d.iddepartamento
+	HAVING Media_Departamento < (SELECT round(avg(ka.avaliacao), 2)
+					FROM kpisavaliados ka
+					WHERE ka.ano = 2019)
+ORDER BY Media_Departamento asc;
+
 -- Q8: Quais os funcionários com avaliação abaixo da média no ano de 2019?
 select 	f.idfuncionario as 'Numero Funcionário',
 		concat(f.primeiro, " ", f.apelido) as Nome,
