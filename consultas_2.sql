@@ -1,24 +1,22 @@
 use basededados6;
 
 -- Q1 Número de funcionários por função
-select fn.descricao as Funcao,
-	   count(*) as Num_funcionarios 
-from funcionarios f
-	inner join funcoes fn
-		on f.idfuncao = fn.idfuncao
-group by fn.descricao
-order by fn.descricao;
+
 
 -- Q2 Número de funcionários por departamento
 select  d.descricao as Nome_Dep,
+		fn.descricao as Funcao,
 		count(*) as Num_funcionarios
-from funcionarios f
-	inner join funcoes fn
-		on f.idfuncao = fn.idfuncao
-	inner join departamentos d
-		on fn.iddepartamento = d.iddepartamento
-group by d.descricao
-order by 1;
+from funcionarios f join funcoes fn
+						on f.idfuncao = fn.idfuncao
+					join departamentos d
+						on fn.iddepartamento = d.iddepartamento
+					join hierarquiaorg h
+						on d.idhierarquia = h.idhierarquia
+group by Funcao
+order by h.nivelhierarquico asc;
+
+
 
 -- Q3 Tarefas Atribuidas a Funções por Departamento
 SELECT d.iddepartamento AS nDep, d.descricao AS Departamento, f.descricao AS Função, t.idtarefa AS idTarefa, t.descricao AS Tarefa

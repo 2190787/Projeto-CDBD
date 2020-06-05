@@ -7,28 +7,26 @@ Simão Santos Pedro, estudante n.º 2192579
 
 -- ********************			CONSULTAS 		********************
 
--- Q1 Número de funcionários por função
-select fn.descricao as Funcao,
-	   count(*) as Num_funcionarios 
-from funcionarios f
-	inner join funcoes fn
-		on f.idfuncao = fn.idfuncao
-group by fn.descricao
-order by fn.descricao;
+-- Q1 Organograma hierarquico da organização
+select h.descricao,
+	   h.nivelhierarquico
+from hierarquiaorg h;
 
--- Q2 Número de funcionários por departamento
+-- Q2 Número de funcionários por departamento e por função
 select  d.descricao as Nome_Dep,
+		fn.descricao as Funcao,
 		count(*) as Num_funcionarios
-from funcionarios f
-	inner join funcoes fn
-		on f.idfuncao = fn.idfuncao
-	inner join departamentos d
-		on fn.iddepartamento = d.iddepartamento
-group by d.descricao
-order by 1;
+from funcionarios f join funcoes fn
+						on f.idfuncao = fn.idfuncao
+					join departamentos d
+						on fn.iddepartamento = d.iddepartamento
+					join hierarquiaorg h
+						on d.idhierarquia = h.idhierarquia
+group by Funcao
+order by h.nivelhierarquico asc;
 
 -- Q3 Tarefas Atribuidas a Funções por Departamento
-select d.iddepartamento as nDep, d.descricao as Departamento, f.descricao as Função, t.idtarefa as idTarefa, t.descricao as Tarefa
+select d.iddepartamento as Num_Dep, d.descricao as Departamento, f.descricao as Função, t.idtarefa as idTarefa, t.descricao as Tarefa
 from funcoes f 	join departamentos d
 					on d.iddepartamento = f.iddepartamento
 				join hierarquiaorg n
@@ -37,7 +35,7 @@ from funcoes f 	join departamentos d
 					on l.idfuncao = f.idfuncao
 				join tarefas t
 					on t.idtarefa = l.idtarefa
-order by 1, 2;
+order by Num_Dep, Departamento;
 
 -- Q4 Kpi's extraídos da cada tarefa de cada função
 select fn.descricao as Funcao, t.descricao as Tarefa, k.descricao as KPI
