@@ -4,153 +4,136 @@ Módulo de Avaliação de Desepenho de Colaboradores
 Ricardo Gonçalves Lopes, estudante n.º 2190787
 Simão Santos Pedro, estudante n.º 2192579
 */
+
 -- ********************			CONSULTAS 		********************
 
-USE basededados6;
+-- Q1 Número de funcionários por função
+select fn.descricao as Funcao,
+	   count(*) as Num_funcionarios 
+from funcionarios f
+	inner join funcoes fn
+		on f.idfuncao = fn.idfuncao
+group by fn.descricao
+order by fn.descricao;
 
-	SELECT n.nivelhierarquico AS Hierarquia, n.descricao AS Nivel, d.descricao AS Departamento
-	FROM funcoes f 	JOIN departamentos d
-						ON d.iddepartamento = f.iddepartamento
-					JOIN hierarquiaorg n
-						ON n.idhierarquia = d.idhierarquia
-	GROUP BY d.iddepartamento
-	ORDER BY 1, d.iddepartamento;
-    
-SELECT DISTINCT d.iddepartamento AS NDEP, d.descricao AS Departamento, f.descricao AS Função
-FROM funcoes f 	JOIN departamentos d
-					ON d.iddepartamento = f.iddepartamento
-				JOIN hierarquiaorg n
-					ON n.idhierarquia = d.idhierarquia
-WHERE d.idhierarquia = 3;
+-- Q2 Número de funcionários por departamento
+select  d.descricao as Nome_Dep,
+		count(*) as Num_funcionarios
+from funcionarios f
+	inner join funcoes fn
+		on f.idfuncao = fn.idfuncao
+	inner join departamentos d
+		on fn.iddepartamento = d.iddepartamento
+group by d.descricao
+order by 1;
 
--- Tarefas Atribuidas a Funções por Departamento
-SELECT d.iddepartamento AS nDep, d.descricao AS Departamento, f.descricao AS Função, t.idtarefa AS idTarefa, t.descricao AS Tarefa
-FROM funcoes f 	JOIN departamentos d
-					ON d.iddepartamento = f.iddepartamento
-				JOIN hierarquiaorg n
-					ON n.idhierarquia = d.idhierarquia
-				JOIN listatarefas l
-					ON l.idfuncao = f.idfuncao
-				JOIN tarefas t
-					ON t.idtarefa = l.idtarefa
-ORDER BY 1, 2;      
+-- Q3 Tarefas Atribuidas a Funções por Departamento
+select d.iddepartamento as nDep, d.descricao as Departamento, f.descricao as Função, t.idtarefa as idTarefa, t.descricao as Tarefa
+from funcoes f 	join departamentos d
+					on d.iddepartamento = f.iddepartamento
+				join hierarquiaorg n
+					on n.idhierarquia = d.idhierarquia
+				join listatarefas l
+					on l.idfuncao = f.idfuncao
+				join tarefas t
+					on t.idtarefa = l.idtarefa
+order by 1, 2;
 
-CREATE OR REPLACE VIEW V_Tarefas_Atribuidas_Funcoes_Departamento AS
-SELECT d.iddepartamento AS nDep, d.descricao AS Departamento, fn.descricao AS Função, f.idfuncionario, f.primeiro, f. apelido, fc.telefoneempresa
-FROM funcionarios f JOIN funcoes fn
-						ON fn.idfuncao = f.idfuncao
-					LEFT JOIN funcionarioschefe fc
-						ON fc.idfuncionariochefe = f.idfuncionario
-					JOIN departamentos d
-						ON d.iddepartamento = fn.iddepartamento
-					JOIN hierarquiaorg n
-						ON n.idhierarquia = d.idhierarquia
-ORDER BY 1, 2; 
+-- Q4 Kpi's extraídos da cada tarefa de cada função
+select fn.descricao as Funcao, t.descricao as Tarefa, k.descricao as KPI
+from funcoes fn join listatarefas lt
+					on fn.idfuncao = lt.idfuncao
+				join tarefas t
+					on lt.idtarefa = t.idtarefa
+				join kpis k
+					on t.idtarefa = k.idtarefa;
+                    
+-- Q5 Avaliação média dos colaboradores no Ano de 2019, por exemplo
+select ad.ano, concat(f.primeiro, " ", f.apelido) as Nome, round(avg(ka.avaliacao), 2) as Media
+from funcionarios f join avaliacoesdesempenho ad
+						on ad.idavaliado = f.idfuncionario
+                    join kpisavaliados ka
+						on (ad.ano = ka.ano and ad.idavaliado = ka.idavaliado)
+where ad.ano = 2019
+group by Nome
+order by Media desc;
 
-SELECT d.iddepartamento AS nDep, d.descricao AS Dv_avaliacoes_funcionarios_por_kpi_e_por_anov_avaliacoes_funcionarios_por_kpi_e_por_anoepartamento, f.descricao AS Função, t.idtarefa AS idTarefa, t.descricao AS Tarefa
-FROM funcoes f 	JOIN departamentos d
-					ON d.iddepartamento = f.iddepartamento
-				JOIN hierarquiaorg n
-					ON n.idhierarquia = d.idhierarquia
-				JOIN listatarefas l
-					ON l.idfuncao = f.idfuncao
-				JOIN tarefas t
-					ON t.idtarefa = l.idtarefa;
+-- Q6 Avaliação médio por departamento no ano de 2019, por exemplo
+select ad.ano, d.descricao as Departamento, round(avg(ka.avaliacao), 2) as Media
+from funcionarios f join funcoes fn
+						on f.idfuncao = fn.idfuncao
+					join departamentos d
+						on fn.iddepartamento = d.iddepartamento
+					join avaliacoesdesempenho ad
+						on ad.idavaliado = f.idfuncionario
+                    join kpisavaliados ka
+						on (ad.ano = ka.ano and ad.idavaliado = ka.idavaliado)
+where ad.ano = 2019
+group by Departamento
+order by media desc;
 
-CREATE OR REPLACE VIEW V_Tarefas_Por_Atribuir_Funcoes AS
-SELECT d.iddepartamento AS nDep, d.descricao AS Departamento, f.descricao AS Função, t.idtarefa AS idTarefa, t.descricao AS Tarefa
-FROM funcoes f 	JOIN departamentos d
-					ON d.iddepartamento = f.iddepartamento
-				JOIN hierarquiaorg n
-					ON n.idhierarquia = d.idhierarquia
-				RIGHT JOIN listatarefas l
-					ON l.idfuncao = f.idfuncao
-				RIGHT JOIN tarefas t
-					ON t.idtarefa = l.idtarefa
-WHERE isnull(f.idfuncao)
-ORDER BY 1, 2;                    
+-- Q8: Quais os funcionários com avaliação abaixo da média no ano de 2019?
+select 	f.idfuncionario as 'Numero Funcionário',
+		concat(f.primeiro, " ", f.apelido) as Nome,
+        round(avg(ka.avaliacao), 2) as Media,
+        concat(round(((avg(ka.avaliacao) / (select avg(ka.avaliacao)
+											From kpisavaliados ka
+											where ka.ano = 2019)) - 1) * 100, 2), '%') as 'Desvio Face Média Empresa' 
+from funcionarios f join avaliacoesdesempenho ad
+						on ad.idavaliado = f.idfuncionario
+                    join kpisavaliados ka
+						on (ad.ano = ka.ano and ad.idavaliado = ka.idavaliado)
+where ad.ano = 2019
+group by f.idfuncionario
+having Media < (select avg(ka.avaliacao)
+				From kpisavaliados ka
+				where ka.ano = 2019)
+order by Media desc;
 
-SELECT f.idfuncionario, f.primeiro, f.apelido, fn.descricao AS Funcao, t.idtarefa, t.descricao AS Tarefa, k.idkpi
-FROM funcionarios f JOIN funcoes fn
-						ON fn.idfuncao = f.idfuncao
-					JOIN listatarefas l
-						ON l.idfuncao = fn.idfuncao
-					JOIN tarefas t
-						ON t.idtarefa = l.idtarefa
-					JOIN kpis k
-						ON k.idtarefa = t.idtarefa;
-SELECT *
-FROM avaliacoesdesempenho av JOIN v_kpi_por_funcionario v_kpi
-							ON av.idavaliado = v_kpi.idfuncionario
-WHERE av.ano = 2019;
+-- Q9: Quais os funcionários com a avaliação no Top3 da empresa no ano 2019?
+select 	f.idfuncionario as 'Numero Funcionário',
+		concat(f.primeiro, " ", f.apelido) as Nome, 
+        format(avg(ka.avaliacao), 2) as Avaliação
+from funcionarios f join avaliacoesdesempenho av
+						on f.idfuncionario = av.idavaliado
+					join kpisavaliados ka 
+						on ka.ano = av.ano and ka.idavaliado = av.idavaliado
+where av.ano = 2019
+group by f.idfuncionario
+order by 3 desc
+limit 3;
 
--- Avaliação de todos os funcionários por KPI e por Ano
-select f.idfuncionario, concat(f.primeiro, " ", f.apelido) AS Nome, fn.descricao AS Funcao, t.descricao AS Tarefa, k.descricao AS KPI, ka.avaliacao AS Pontuacao, av.ano
-from funcionarios f JOIN funcoes fn
-						ON fn.idfuncao = f.idfuncao
-					JOIN listatarefas l
-						ON l.idfuncao = fn.idfuncao
-					JOIN tarefas t
-						ON t.idtarefa = l.idtarefa
-					JOIN kpis k
-						ON k.idtarefa = t.idtarefa
-					JOIN kpisavaliados ka
-						on ka.idkpi = k.idkpi
-					Join avaliacoesdesempenho av
-						on (av.ano = ka.ano and av.idavaliado = ka.idavaliado)
-where av.ano = year(now())-1;
-
-CREATE OR REPLACE VIEW V_funcionario_funcao_departamento_hierarquia AS
-SELECT DISTINCT f.idfuncionario AS idfuncionario, fn.descricao AS lbfuncao, d.iddepartamento AS iddepartamento, d.descricao AS lbdepartamento, h.idhierarquia AS hierarquia, h.descricao AS lbhierarquia
-FROM funcionarios f JOIN funcoes fn
-						ON fn.idfuncao = f.idfuncao
-					JOIN departamentos d
-						ON d.iddepartamento = fn.iddepartamento
-					JOIN hierarquiaorg h
-						ON h.idhierarquia = d.idhierarquia;
-
-SELECT f.idfuncionario AS ID, concat(f.primeiro, " ", f.apelido) AS Nome, fdn.lbdepartamento AS Departamento, fdn.lbfuncao, concat(round(avg(ka.avaliacao), 2), " pontos") AS Media
-FROM funcionarios f JOIN avaliacoesdesempenho av
-						ON av.idavaliado = f.idfuncionario
-					JOIN kpisavaliados ka
-						ON (ka.ano = av.ano and ka.idavaliado = av.idavaliado)
-					JOIN V_funcionario_funcao_departamento_hierarquia fdn
-						ON fdn.idfuncionario = f.idfuncionario
-WHERE av.ano = (year(now()) - 1) OR isnull(av.ano)
-GROUP BY f.idfuncionario                      
-ORDER BY fdn.hierarquia, fdn.iddepartamento;
-
--- Q10: Evolução da avaliação dos funcionários face ao ano anterior?
-SELECT 	
-	h.descricao AS Nivel,
-    d.descricao AS Departamento,
-	f.idfuncionario AS Id,
+-- Q10: Evolução da avaliação dos funcionários face ao ano de 2018?
+select 	
+	h.descricao as Nivel,
+    d.descricao as Departamento,
+	f.idfuncionario as 'Id Func.',
 	concat(f.primeiro, " ", f.apelido) as 'Funcionário Avaliado',
-    fn.descricao AS Funcao,
+    fn.descricao as Funcao,
 	if(fc.idfuncionariochefe is null , '', 'X') as Chefe,
-    av.idavaliador as Id,
+    av.idavaliador as 'Id Chefe',
     concat(f1.primeiro, " ", f1.apelido) as 'Funcionário Avaliador',
-	T2.av_an_m2 as 'Avaliação Ano-2',
-	T1.av_an_m1 as 'Avaliação Ano-1',
+	T2.av_an_m2 as '2018',
+	T1.av_an_m1 as '2019',
 	case 
 		when T1.av_an_m1 is null and T2.av_an_m2 is null		then '-'
-		when T1.av_an_m1 is not null and T2.av_an_m2 is null 	then 'não foi avaliado no 1º ano'
-        when T1.av_an_m1 is null and T2.av_an_m2 is not null	then 'não foi avaliado no 2º ano'
-		else concat(format((T1.av_an_m1 - T2.av_an_m2) / T1.av_an_m1 * 100, 2), '%')
+		when T1.av_an_m1 is not null and T2.av_an_m2 is null 	then 'não foi avaliado em 2019'
+        when T1.av_an_m1 is null and T2.av_an_m2 is not null	then 'não foi avaliado em 2018'
+		else concat(format(((T1.av_an_m1 / T2.av_an_m2) - 1) * 100, 2), '%')
 	end as Evolução
-FROM funcionarios f 
-	JOIN funcoes fn
-		ON fn.idfuncao = f.idfuncao
-	JOIN departamentos d
-		ON d.iddepartamento = fn.iddepartamento
-	JOIN hierarquiaorg h
-		ON h.idhierarquia = d.idhierarquia
-	LEFT JOIN funcionarioschefe fc
-		ON fc.idfuncionariochefe = f.idfuncionario
-	LEFT JOIN avaliacoesdesempenho av
-		ON av.idavaliado = f.idfuncionario
-	LEFT JOIN funcionarios f1
-		ON f1.idfuncionario = av.idavaliador
+from funcionarios f 
+	join funcoes fn
+		on fn.idfuncao = f.idfuncao
+	join departamentos d
+		on d.iddepartamento = fn.iddepartamento
+	join hierarquiaorg h
+		on h.idhierarquia = d.idhierarquia
+	left join funcionarioschefe fc
+		on fc.idfuncionariochefe = f.idfuncionario
+	left join avaliacoesdesempenho av
+		on av.idavaliado = f.idfuncionario
+	left join funcionarios f1
+		on f1.idfuncionario = av.idavaliador
 	left join 	
 		(
 			select av.idavaliado, format(avg(ka.avaliacao), 2) as 'av_an_m1'
@@ -171,4 +154,4 @@ FROM funcionarios f
 			group by av.idavaliado
 		) T2
 		on T2.idavaliado = f.idfuncionario
-GROUP BY f.idfuncionario;
+group by f.idfuncionario;
