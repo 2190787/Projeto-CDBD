@@ -8,27 +8,6 @@ Simão Santos Pedro, estudante n.º 2192579
 
 USE basededados6;
 
-DROP USER dataadm@localhost;
-FLUSH PRIVILEGES;
-CREATE USER 'dataadm'@'localhost' IDENTIFIED BY 'dataadm';
-GRANT ALL PRIVILEGES ON basededados6.* TO 'dataadm'@'localhost' WITH GRANT OPTION;
-SHOW GRANTS FOR dataadm@localhost;
-
-DROP USER diretor@localhost;
-FLUSH PRIVILEGES;
-CREATE USER 'diretor'@'localhost' IDENTIFIED BY 'diretor';
-SHOW GRANTS FOR diretor@localhost;
-
-DROP USER recursoshumanos@localhost;
-FLUSH PRIVILEGES;
-CREATE USER 'recursoshumanos'@'localhost' IDENTIFIED BY 'recursoshumanos';
-SHOW GRANTS FOR recursoshumanos@localhost;
-
-DROP USER funcionariochefe@localhost;
-FLUSH PRIVILEGES;
-CREATE USER 'funcionariochefe'@'localhost' IDENTIFIED BY 'funcionariochefe';
-SHOW GRANTS FOR funcionariochefe@localhost;
-
 -- View de avaliaçãoes atribuidas por cada funcionário chefe
 create or replace view v_avaliacoes_preenchidas_avaliadores as
 select
@@ -76,4 +55,22 @@ from funcionarios f
 		on fn.idfuncao = lt.idfuncao
 	join tarefas t
 		on lt.idtarefa = t.idtarefa
-order by f.idfuncionario
+order by f.idfuncionario;
+
+-- Criação do utilizador DataBaseDesigner e atribuição de previlégios
+DROP USER databasedesigner@localhost;
+CREATE USER 'databasedesigner'@'localhost' IDENTIFIED BY 'dbdesigner';
+GRANT ALL PRIVILEGES ON basededados6.* TO 'databasedesigner'@'localhost' WITH GRANT OPTION;
+SHOW GRANTS FOR databasedesigner@localhost;
+
+-- Criação do utilizador DataBaseDesigner e atribuição de previlégios
+DROP USER diretor@localhost;
+FLUSH PRIVILEGES;
+CREATE USER 'diretor'@'localhost' IDENTIFIED BY 'diretor';
+SHOW GRANTS FOR diretor@localhost;
+
+DROP USER recursoshumanos@localhost;
+FLUSH PRIVILEGES;
+CREATE USER 'recursoshumanos'@'localhost' IDENTIFIED BY 'recursoshumanos';
+SHOW GRANTS FOR recursoshumanos@localhost;
+
