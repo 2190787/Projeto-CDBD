@@ -57,20 +57,42 @@ from funcionarios f
 		on lt.idtarefa = t.idtarefa
 order by f.idfuncionario;
 
--- Criação do utilizador DataBaseDesigner e atribuição de previlégios
-DROP USER databasedesigner@localhost;
-CREATE USER 'databasedesigner'@'localhost' IDENTIFIED BY 'dbdesigner';
-GRANT ALL PRIVILEGES ON basededados6.* TO 'databasedesigner'@'localhost' WITH GRANT OPTION;
-SHOW GRANTS FOR databasedesigner@localhost;
 
--- Criação do utilizador DataBaseDesigner e atribuição de previlégios
+DROP USER dataadm@localhost;
+FLUSH PRIVILEGES;
+CREATE USER 'dataadm'@'localhost' IDENTIFIED BY 'dataadm';
+GRANT ALL PRIVILEGES ON basededados6.* TO 'dataadm'@'localhost' WITH GRANT OPTION;
+-- SHOW GRANTS FOR dataadm@localhost;
+
 DROP USER diretor@localhost;
 FLUSH PRIVILEGES;
 CREATE USER 'diretor'@'localhost' IDENTIFIED BY 'diretor';
-SHOW GRANTS FOR diretor@localhost;
+
+GRANT INSERT ON funcoes TO 'diretor'@'localhost';
+GRANT INSERT ON listatarefas TO 'diretor'@'localhost';
+GRANT INSERT ON tarefas TO 'diretor'@'localhost';
+
+GRANT UPDATE(descricao, iddepartamento) ON funcoes TO 'diretor'@'localhost';
+GRANT UPDATE ON listatarefas TO 'diretor'@'localhost';
+GRANT UPDATE(descricao) ON tarefas TO 'diretor'@'localhost';
+
+GRANT SELECT(ID, Nome, Data_Contratacao, Funcao, Tarefa) ON v_funcionarios_funcoes_departamentos_tarefas TO 'diretor'@'localhost';
+-- SHOW GRANTS FOR diretor@localhost;
 
 DROP USER recursoshumanos@localhost;
 FLUSH PRIVILEGES;
 CREATE USER 'recursoshumanos'@'localhost' IDENTIFIED BY 'recursoshumanos';
-SHOW GRANTS FOR recursoshumanos@localhost;
+
+GRANT SELECT ON funcionarios TO 'recursoshumanos'@'localhost';
+GRANT INSERT ON funcionarios TO 'recursoshumanos'@'localhost';
+GRANT UPDATE ON funcionarios TO 'recursoshumanos'@'localhost';
+
+GRANT SELECT ON funcionarioschefe TO 'recursoshumanos'@'localhost';
+GRANT INSERT(telefoneempresa) ON funcionarioschefe TO 'recursoshumanos'@'localhost';
+GRANT UPDATE(telefoneempresa) ON funcionarioschefe TO 'recursoshumanos'@'localhost';
+
+GRANT SELECT ON v_avaliacoes_preenchidas_avaliadores TO 'recursoshumanos'@'localhost';
+GRANT SELECT ON v_funcionarios_funcoes_departamentos_tarefas TO 'recursoshumanos'@'localhost';
+-- SHOW GRANTS FOR recursoshumanos@localhost;
+
 
