@@ -102,10 +102,10 @@ INSERT INTO listatarefas(idfuncao, idtarefa) VALUES
 	(6, 22);
 
 INSERT INTO funcionarios(idfuncionario, primeiro, apelido, rua, numero, andar, fracao, localidade, numerocp, extensaocp, designacaopostal, dtanascimento, cc, nif, niss, dtacontratacao, idfuncao) VALUES
-	(default, 'José', 'Caiado', 'Beco das Flores', '1', '5.º', 'Esq', 'Leiria', '2400', '13', 'Leiria', '1957/03/21 00:00:00', '18540854', '953106957', '12953106957', '2011/12/03 00:00:00',1),
-	(default, 'Dulce', 'Zózimo', 'Rua da Aveleira', '2', '4.º', 'Frt', 'Brogal', '2400', '14', 'Brogal', '1997/02/24 00:00:00', '12717319', '460055683', '12460055683', '2015/11/21 00:00:00',2),
-	(default, 'Tânia', 'Norte', 'Travessa Nossa Senhora das Preces', '3', '3.º', 'Dir', 'Casal do ralha', '2400', '18', 'Casal do ralha', '1998/03/01 00:00:00', '14662221', '322946200', '12322946200', '2019/05/21 00:00:00',3),
-	(default, 'Telmo', 'Brazão', 'Rua Principal ', '4', '2.º', 'Esq', 'Cascaria', '2400', '20', 'Cascaria', '1970/06/14 00:00:00', '19232303', '688571228', '12688571228', '2013/06/29 00:00:00',4),
+	(default, 'José', 'Caiado', 'Beco das Flores', '1', '5.º', 'Esq', 'Leiria', '2400', '013', 'Leiria', '1957/03/21 00:00:00', '18540854', '953106957', '12953106957', '2011/12/03 00:00:00',1),
+	(default, 'Dulce', 'Zózimo', 'Rua da Aveleira', '2', '4.º', 'Frt', 'Brogal', '2400', '014', 'Brogal', '1997/02/24 00:00:00', '12717319', '460055683', '12460055683', '2015/11/21 00:00:00',2),
+	(default, 'Tânia', 'Norte', 'Travessa Nossa Senhora das Preces', '3', '3.º', 'Dir', 'Casal do ralha', '2400', '018', 'Casal do ralha', '1998/03/01 00:00:00', '14662221', '322946200', '12322946200', '2019/05/21 00:00:00',3),
+	(default, 'Telmo', 'Brazão', 'Rua Principal ', '4', '2.º', 'Esq', 'Cascaria', '2400', '020', 'Cascaria', '1970/06/14 00:00:00', '19232303', '688571228', '12688571228', '2013/06/29 00:00:00',4),
 	(default, 'Rodrigo', 'Madeira', 'Rua Nossa Senhora das Preces', '5', '1.º', 'Frt', 'Meia légua', '2400', '430', 'Meia légua', '1965/09/03 00:00:00', '18101682', '925889729', '12925889729', '2013/06/29 00:00:00',5),
 	(default, 'Arlindo', 'Faustino', 'Rua das Hortas', '6', '5.º', 'Dir', 'Mouratos', '2400', '432', 'Mouratos', '1960/08/06 00:00:00', '11969437', '630577122', '12630577122', '2014/07/17 00:00:00',6),
 	(default, 'Cristina', 'Cordeiro', 'Rua Mina da Póvoa ', '7', '4.º', 'Esq', 'Pernelhas', '2400', '442', 'Pernelhas', '1961/06/26 00:00:00', '12663714', '860864399', '12860864399', '2015/01/02 00:00:00',7),
@@ -121,7 +121,7 @@ INSERT INTO funcionarios(idfuncionario, primeiro, apelido, rua, numero, andar, f
 	(default, 'Cristiano', 'Fernandes', 'Largo da Estação', '21', '5.º', 'Dir', 'Toco', '2400', '770', 'Toco', '1981/10/23 00:00:00', '18001924', '570255507', '12570255507', '2016/07/17 00:00:00',10),
 	(default, 'Carla', 'Jesus', 'Avenida do Emigrante', '26', '5.º', 'Frt', 'Azoia', '2400', '823', 'Azoia', '1983/03/11 00:00:00', '17215050', '767554215', '12767554215', '2017/04/03 00:00:00',10),
 	(default, 'Cecília', 'Simões', 'Rua Armando Santos', '31', '5.º', 'Esq', 'Vale horto', '2400', '828', 'Vale horto', '1987/12/03 00:00:00', '14096609', '206985995', '12206985995', '2015/11/16 00:00:00',10),
-	(default, 'Tânia', 'Silvério', 'Rua Luciana Aguiar Guerra ', '36', '5.º', 'Dir', 'Arneiro', '2405', '5', 'Arneiro', '1986/04/20 00:00:00', '19881312', '241828089', '12241828089', '2014/12/06 00:00:00',10);
+	(default, 'Tânia', 'Silvério', 'Rua Luciana Aguiar Guerra ', '36', '5.º', 'Dir', 'Arneiro', '2405', '005', 'Arneiro', '1986/04/20 00:00:00', '19881312', '241828089', '12241828089', '2014/12/06 00:00:00',10);
 
 INSERT INTO funcionarioschefe(idfuncionariochefe, telefoneempresa) VALUES
 	(1, '967654321'),
