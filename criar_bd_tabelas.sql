@@ -1,14 +1,14 @@
 /*
-TeSP_PSI_1920_CDBD_6
+TeSP_PSI_1920_CDBD_PL_6
 Módulo de Avaliação de Desepenho de Colaboradores
 Ricardo Gonçalves Lopes, estudante n.º 2190787
 Simão Santos Pedro, estudante n.º 2192579
 */
 -- ********************			CRIAÇÃO BASE DE DADOS / TABELAS 		********************
 
-DROP DATABASE IF EXISTS basededados6;
-CREATE DATABASE basededados6;
-USE basededados6;
+DROP DATABASE IF EXISTS basededados_pl_6;
+CREATE DATABASE basededados_pl_6;
+USE basededados_pl_6;
 
 CREATE TABLE hierarquiaorg(
 	idhierarquia 				INT UNSIGNED	NOT NULL AUTO_INCREMENT,

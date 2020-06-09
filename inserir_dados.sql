@@ -1,12 +1,12 @@
 /*
-TeSP_PSI_1920_CDBD_6
+TeSP_PSI_1920_CDBD_PL_6
 Módulo de Avaliação de Desepenho de Colaboradores
 Ricardo Gonçalves Lopes, estudante n.º 2190787
 Simão Santos Pedro, estudante n.º 2192579
 */
 -- ********************			INTRODUÇÃO DE DADOS 		********************
 
-USE basededados6;
+USE basededados_pl_6;
 
 INSERT INTO hierarquiaorg(idhierarquia,	descricao, nivelhierarquico)	VALUES
 	(default, 'Administração', 1),

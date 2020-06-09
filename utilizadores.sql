@@ -1,12 +1,12 @@
 /*
-TeSP_PSI_1920_CDBD_6
+TeSP_PSI_1920_CDBD_PL_6
 Módulo de Avaliação de Desepenho de Colaboradores
 Ricardo Gonçalves Lopes, estudante n.º 2190787
 Simão Santos Pedro, estudante n.º 2192579
 */
 -- ********************			CRIAÇÃO DE UTILIZADORES / CONCESSÃO DE PRIVILÉGIOS			********************
 
-USE basededados6;
+USE basededados_pl_6;
 
 -- View de avaliaçãoes atribuidas por cada funcionário chefe
 create or replace view v_avaliacoes_preenchidas_avaliadores as
@@ -57,16 +57,19 @@ from funcionarios f
 		on lt.idtarefa = t.idtarefa
 order by f.idfuncionario;
 
+-- Criação do utilizador databasedesigner, e atribuição de privilégios
+DROP USER databasedesigner@localhost;
+CREATE USER 'databasedesigner'@'localhost' IDENTIFIED BY 'dbdesigner';
 
-DROP USER dataadm@localhost;
-FLUSH PRIVILEGES;
-CREATE USER 'dataadm'@'localhost' IDENTIFIED BY 'dataadm';
-GRANT ALL PRIVILEGES ON basededados6.* TO 'dataadm'@'localhost' WITH GRANT OPTION;
--- SHOW GRANTS FOR dataadm@localhost;
+GRANT ALL PRIVILEGES ON basededados_pl_6.* TO 'databasedesigner'@'localhost' WITH GRANT OPTION;
 
+-- SHOW GRANTS FOR databasedesigner@localhost;
+
+-- Criação do utilizador diretor, e atribuição de privilégios
 DROP USER diretor@localhost;
-FLUSH PRIVILEGES;
 CREATE USER 'diretor'@'localhost' IDENTIFIED BY 'diretor';
+
+GRANT SELECT(ID, Nome, Data_Contratacao, Funcao, Tarefa) ON v_funcionarios_funcoes_departamentos_tarefas TO 'diretor'@'localhost';
 
 GRANT INSERT ON funcoes TO 'diretor'@'localhost';
 GRANT INSERT ON listatarefas TO 'diretor'@'localhost';
@@ -76,23 +79,21 @@ GRANT UPDATE(descricao, iddepartamento) ON funcoes TO 'diretor'@'localhost';
 GRANT UPDATE ON listatarefas TO 'diretor'@'localhost';
 GRANT UPDATE(descricao) ON tarefas TO 'diretor'@'localhost';
 
-GRANT SELECT(ID, Nome, Data_Contratacao, Funcao, Tarefa) ON v_funcionarios_funcoes_departamentos_tarefas TO 'diretor'@'localhost';
 -- SHOW GRANTS FOR diretor@localhost;
 
+-- Criação do utilizador recursoshumanos, e atribuição de privilégios
 DROP USER recursoshumanos@localhost;
-FLUSH PRIVILEGES;
 CREATE USER 'recursoshumanos'@'localhost' IDENTIFIED BY 'recursoshumanos';
-
-GRANT SELECT ON funcionarios TO 'recursoshumanos'@'localhost';
-GRANT INSERT ON funcionarios TO 'recursoshumanos'@'localhost';
-GRANT UPDATE ON funcionarios TO 'recursoshumanos'@'localhost';
-
-GRANT SELECT ON funcionarioschefe TO 'recursoshumanos'@'localhost';
-GRANT INSERT(telefoneempresa) ON funcionarioschefe TO 'recursoshumanos'@'localhost';
-GRANT UPDATE(telefoneempresa) ON funcionarioschefe TO 'recursoshumanos'@'localhost';
 
 GRANT SELECT ON v_avaliacoes_preenchidas_avaliadores TO 'recursoshumanos'@'localhost';
 GRANT SELECT ON v_funcionarios_funcoes_departamentos_tarefas TO 'recursoshumanos'@'localhost';
+
+GRANT INSERT ON funcionarios TO 'recursoshumanos'@'localhost';
+GRANT INSERT(telefoneempresa) ON funcionarioschefe TO 'recursoshumanos'@'localhost';
+
+GRANT UPDATE ON funcionarios TO 'recursoshumanos'@'localhost';
+GRANT UPDATE(telefoneempresa) ON funcionarioschefe TO 'recursoshumanos'@'localhost';
+
 -- SHOW GRANTS FOR recursoshumanos@localhost;
 
-
+FLUSH PRIVILEGES;
