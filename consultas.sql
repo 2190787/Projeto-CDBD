@@ -12,7 +12,7 @@ select h.descricao,
 	   h.nivelhierarquico
 from hierarquiaorg h;
 
--- Q2 Número de funcionários por função no departamento Programação
+-- Q2 Número de funcionários por função num determinado departamento? Exemplo: Departamento de Programação
 select  d.descricao as Nome_Dep,
 		fn.descricao as Funcao,
 		count(*) as Num_funcionarios
@@ -26,7 +26,7 @@ where d.descricao = 'Programação'
 group by Funcao
 order by h.nivelhierarquico asc;
 
--- Q3 Tarefas Atribuidas a Funções do Departamento Vendas
+-- Q3 Tarefas Atribuidas a cada função de um determinado departamento. Exemplo: Departamento das Vendas
 select 	d.descricao as Departamento,
 		f.descricao as Função,
         t.idtarefa as 'Id Tarefa',
@@ -42,7 +42,7 @@ from funcoes f 	join departamentos d
 where d.descricao = 'Vendas'
 order by h.nivelhierarquico;
 
--- Q4 Kpi's extraídos da cada tarefa da função Diretor Geral
+-- Q4 Kpi's extraídos da cada tarefa de uma determinada função. Exemplo: Função de Diretor Geral
 select 	fn.descricao as Funcao,
 		t.descricao as Tarefa,
         k.descricao as KPI
@@ -55,7 +55,7 @@ from funcoes fn join listatarefas lt
 where fn.descricao ='Diretor Geral'
 order by 2, 3;                  
                     
--- Q5 Avaliação média dos colaboradores no Ano de 2019, por exemplo
+-- Q5 Avaliação média dos colaboradores num determinado ano. Exemplo: Ano de 2019
 select 	ad.ano, 
 		concat(f.primeiro, " ",
         f.apelido) as Nome,
@@ -68,7 +68,7 @@ where ad.ano = 2019
 group by Nome
 order by Media desc;
 
--- Q6 Avaliação médio por departamento no ano de 2019, por exemplo
+-- Q6 Avaliação média por departamento num determinado ano. Exemplo: Ano de 2019
 select 	ad.ano,
 		d.descricao as Departamento,
         round(avg(ka.avaliacao), 2) as Media
@@ -84,7 +84,7 @@ where ad.ano = 2019
 group by Departamento
 order by media desc;
 
--- Q7 Departamentos com avaliação abaixo da média no ano de 2019, por exemplo
+-- Q7 Departamentos com avaliação abaixo da média num determinado ano? Exemplo: Ano de 2019
 select d.descricao as Departamento,
        round(avg(ka.avaliacao), 2) as Media_Departamento,
 	   concat(round((avg(ka.avaliacao) - (SELECT avg(ka.avaliacao)
@@ -107,7 +107,7 @@ GROUP BY d.iddepartamento
 					WHERE ka.ano = 2019)
 ORDER BY Media_Departamento asc;
 
--- Q8: Quais os funcionários com avaliação abaixo da média no ano de 2019?
+-- Q8: Quais os funcionários com avaliação abaixo da média num determinado ano? Exemplo: Ano de 2019
 select 	f.idfuncionario as 'Numero Funcionário',
 		concat(f.primeiro, " ", f.apelido) as Nome,
         round(avg(ka.avaliacao), 2) as Avaliação_Média,
@@ -125,7 +125,7 @@ having Avaliação_Média < (select avg(ka.avaliacao)
 				where ka.ano = 2019)
 order by Avaliação_Média desc;
 
--- Q9: Quais os funcionários com a avaliação no Top3 da empresa no ano 2019?
+-- Q9: Quais os funcionários com a avaliação no Top3 da empresa num determinado ano. Exemplo: Ano de 2019?
 select 	f.idfuncionario as 'Numero Funcionário',
 		concat(f.primeiro, " ", f.apelido) as Nome, 
         format(avg(ka.avaliacao), 2) as Avaliação
@@ -138,7 +138,7 @@ group by f.idfuncionario
 order by 3 desc
 limit 3;
 
--- Q10: Evolução da avaliação dos funcionários face ao ano de 2018?
+-- Q10: Evolução da avaliação dos funcionários em comparação entre dois anos. Exemplo: Evolução entre 2019 vs 2018
 select 	
 	h.descricao as Nivel,
     d.descricao as Departamento,
